@@ -1,0 +1,38 @@
+{
+    "log": {
+        "name": "console",
+        "level": "debug"
+    },
+    "appID": {
+        "retries": 1,
+        "retryDelay": 3000,
+        "timeout": 10000
+    },
+    "devMode": false,
+    "keyProtect": {
+        "adminKeyName": "cm-simpleconsent-admin-ep",
+        "retries": 1,
+        "retryDelay": 3000,
+        "timeout": 10000
+    },
+    "blockchain": {
+        "connectionFile": "profile.json",
+        "admin": "admin",
+        "chaincodeName": "consent",
+        "channelName": "mychannel",
+        "gatewayDiscovery": {
+            "enabled": true,
+            "asLocalhost": false
+        },
+        "pingTimeout": 5000
+    },
+    "rateLimit": {
+        "windowMs": 60000,
+        "dbName": "cm-rate-limiter",
+        "dbPartitionKey": "cm",
+        "message" : {
+            "message": "Too many requests, try again after one minute",
+            "status": 429
+          }
+    } 
+}

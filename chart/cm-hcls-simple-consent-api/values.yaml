@@ -1,0 +1,89 @@
+nameOverride: "cm-hcls-simple-consent-api"
+fullnameOverride: "cm-hcls-simple-consent-api"
+environment: "development"
+
+replicaCount: 1
+annotations:
+  TOOLCHAIN_ID: tbd
+  GIT_URL: tbd
+  GIT_BRANCH: tbd
+  GIT_COMMIT: tbd
+  USER_NAME: tbd
+  APPLICATION_VERSION: tbd
+image:
+  repository : <helm-repo>
+  tag: <helm-tag>
+  pullPolicy: IfNotPresent
+  pullSecret: regsecret
+config:
+  enableHttps: "false"
+  secretName : "cm-tls-secret-crt"
+  probes: "disabled"
+  appId:
+    url: "null"
+    tenantId: "null"
+    clientId: "null"
+    clientSecret: "null"
+    iamKey: "null"
+  keyProtect:
+    endPoint: "null"
+    guid: "null"
+    iamKey: "null"
+    adminKeyName: "null"
+  deIdentifier:
+    url: "null"
+  blockchain:
+    admin:
+    chaincodeName:
+    channelName:
+    adminSecret:
+  rateLimit:
+    windowMs:
+    dbPartitionKey:
+    dbName:
+    message:
+    statusCode:
+  database:
+    username: "null"
+    password: "null"
+    host: "null"
+    proxyUrl: "null"
+    cloudantTimeout: "null"
+  cryptography:
+    secretkey: "null"
+    salt: "null"
+    iv: "null"
+  fhir:    
+    patientSupportEndpoint: patient-access-support/v4/Patient
+  log:
+    name: "console"
+    level: "debug"
+newRelic:
+  enabled: "false"
+  appName: "null"
+  licenseKey: "null"
+service:
+  type: ClusterIP
+  externalPort: 3002
+  internalPort: 3002
+
+cluster:
+  ingress:
+    enabled: false
+    subdomain:
+    externalPort:
+    externalProtocol:
+    secretName:
+    limitRps: 100
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 250m
+    memory: 128Mi

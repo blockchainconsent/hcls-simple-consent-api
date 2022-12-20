@@ -1,0 +1,471 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Consent Manager Simple Consent Service",
+        "description": "Consent Manager Simple Consent Service",
+        "version": "1.0.0"
+    },
+    "tags": [
+        {
+            "name": "Users"
+        },
+        {
+            "name": "Consent"
+        }
+    ],
+    "servers": [],
+    "paths": {
+        "/simple-consent/api/v1/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login as a registered user",
+                "description": "User login",
+                "operationId": "user_login",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UserLogin"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful user login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserLoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/UserLoginError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/UserLoginServerError"
+                    }
+                }
+            }
+        },
+        "/simple-consent/api/v1/users/forgotPassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Reset password for a registered user",
+                "description": "User forgot password",
+                "operationId": "user_forgot_password",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UserForgotPassword"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reset password email sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BasicResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ForgotPasswordError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ForgotPasswordError"
+                    }
+                }
+            }
+        },
+        "/simple-consent/api/v1/consent/query": {
+            "get": {
+                "tags": [
+                    "Consent"
+                ],
+                "description": "Returns consents by PatientID",
+                "operationId": "get_consents_by_patient_id",
+                "summary": "Query consents by PatientID",
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "parameters": [
+                    {
+                        "name": "x-cm-patientid",
+                        "in": "header",
+                        "description": "PatientID",
+                        "required": true,
+                        "schema": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 9999,
+                          "pattern": ".+"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Page Size; default and max per query 50",
+                        "schema": {
+                          "type": "integer",
+                          "example": 10
+                        }
+                    },
+                    {
+                        "name": "bookmark",
+                        "in": "query",
+                        "description": "Bookmark, 50 consents max for one request",
+                        "schema": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 9999,
+                          "pattern": ".+"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully queried consents",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConsentQueryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ConsentQueryError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ConsentQueryError"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "UserLoginRequest": {
+                "type": "object",
+                "description": "Object of UserLoginRequest",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "User email",
+                        "minLength": 1,
+                        "maxLength": 9999,
+                        "pattern": ".+",
+                        "example": "email@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "User password",
+                        "minLength": 1,
+                        "maxLength": 9999,
+                        "pattern": ".+",
+                        "example": "password123"
+                    }
+                }
+            },
+            "UserLoginResponse": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "description": "Access token for login",
+                        "example": "xxxxxxxxx"
+                    },
+                    "id_token": {
+                        "type": "string",
+                        "description": "ID of access token for login",
+                        "example": "ID token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "description": "Type of access token for login",
+                        "example": "type"
+                    },
+                    "expires_in": {
+                        "type": "integer",
+                        "description": "The time when login has expired",
+                        "example": 1640000000
+                    },
+                    "scope": {
+                        "type": "string",
+                        "description": "Scope of UserLoginResponse",
+                        "example": "scope"
+                    }
+                },
+                "description": "Object of UserLoginResponse",
+                "example": {
+                    "access_token": "xxxxxxxxx",
+                    "id_token": "token id",
+                    "token_type": "type",
+                    "expires_in": 1640000000,
+                    "scope": "scope"
+                }
+            },
+            "UserForgotPasswordRequest": {
+                "type": "object",
+                "required": [
+                    "userId"
+                ],
+                "properties": {
+                    "userId": {
+                        "type": "string",
+                        "description": "UserID of UserForgotPasswordRequest",
+                        "minLength": 1,
+                        "maxLength": 9999,
+                        "pattern": ".+",
+                        "example": "email@example.com"
+                    }
+                },
+                "description": "Object of UserForgotPasswordRequest"
+            },
+            "BasicResponse": {
+                "type": "object",
+                "properties": {
+                    "msg": {
+                        "type": "string",
+                        "description": "Message of BasicResponse",
+                        "example": "Response",
+                        "minLength": 1,
+                        "maxLength": 9999,
+                        "pattern": ".+"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "Message of BasicResponse",
+                        "example": 200
+                    }
+                },
+                "description": "Object of BasicResponse",
+                "example": {
+                    "msg": "Successful request",
+                    "status": 200
+                }
+            },
+            "BasicErrorMessage": {
+                "type": "object",
+                "required": [
+                    "error"
+                ],
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "message": {
+                                "type": "string",
+                                "description": "Error message",
+                                "minLength": 1,
+                                "maxLength": 9999,
+                                "pattern": ".+",
+                                "example":"Missing required login fields"
+                            }
+                        },
+                        "description": "Error object"
+                    },
+                    "currentTime": {
+                      "type": "string",
+                      "description": "The time when an error has occurred"
+                    }
+                },
+                "description": "Basic error message"
+            },
+             "ServerErrorMessage": {
+                "type": "object",
+                "required": [
+                    "error"
+                ],
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "message": {
+                                "type": "string",
+                                "description": "Error message",
+                                "minLength": 1,
+                                "maxLength": 9999,
+                                "pattern": ".+",
+                                "example":"Failed to login user with AppID: Something went wrong"
+                            }
+                        },
+                        "description": "Error object"
+                    },
+                    "currentTime": {
+                      "type": "string",
+                      "description": "The time when an error has occurred"
+                    }
+                },
+                "description": "Basic error message"
+            },
+            "ConsentQueryResponse": {
+                "type": "object",
+                "description": "Successful consent query response",
+                "properties": {
+                    "msg": {
+                        "type": "string",
+                        "default": "GET /consent was successful",
+                        "description": "Success message"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "default": 200,
+                        "description": "Success status"
+                    },
+                    "payload": {
+                        "type": "array",
+                        "description": "Array with consents",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "ConsentID": {
+                                    "type": "string",
+                                    "description": "ConsentID of consent"
+                                },
+                                "PatientID": {
+                                    "type": "string",
+                                    "description": "PatientID of consent"
+                                },
+                                "ServiceID": {
+                                    "type": "string",
+                                    "description": "ServiceID of consent"
+                                },
+                                "Policy": {
+                                    "type": "string",
+                                    "description": "Policy of consent"
+                                },
+                                "DatatypeIDs": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "DatatypeIDs of consent"
+                                },
+                                "ConsentOption": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Consent options of consent"
+                                },
+                                "Creation": {
+                                    "type": "integer",
+                                    "description": "Time of consent creation"
+                                },
+                                "Expiration": {
+                                    "type": "integer",
+                                    "description": "Time of consent expiration"
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "msg": "Successful request",
+                    "status": 200,
+                    "payload": [
+                        {
+                            "ConsentID": "string",
+                            "PatientID": "string",
+                            "ServiceID": "string",
+                            "Policy": "string",
+                            "DatatypeIDs": ["string"],
+                            "ConsentOption": ["string"],
+                            "Creation": 1640000000,
+                            "Expiration": 1640000000
+                        }
+                    ]
+                }
+            }
+        },
+        "requestBodies": {
+            "UserForgotPassword": {
+                "description": "Reset credentials",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserForgotPasswordRequest"
+                        }
+                    }
+                }
+            },
+            "UserLogin": {
+                "description": "Login credentials",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserLoginRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "UserLoginError": {
+                "description": "Failed to login",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BasicErrorMessage"
+                        }
+                    }
+                }
+            },
+            "UserLoginServerError": {
+        "description": "Failed login due to server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ServerErrorMessage"
+            }
+          }
+        }
+      },
+            "ForgotPasswordError": {
+                "description": "Failed to send reset password email",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BasicErrorMessage"
+                        }
+                    }
+                }
+            },
+            "ConsentQueryError": {
+                "description": "Failed to query consents",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BasicResponse"
+                        }
+                    }
+                }
+            },
+            "UnauthorizedError": {
+                "description": "Logged in user is unauthorized to make this request",
+                "content": {
+                    "text/plain": {
+                        "example": "Error: Unauthorized"
+                    }
+                }
+            }
+        }
+    }
+}

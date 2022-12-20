@@ -1,0 +1,38 @@
+{
+    "log": {
+        "name": "{{ .Values.config.log.name }}",
+        "level": "{{ .Values.config.log.level }}"
+    },
+    "appID": {
+        "retries": 1,
+        "retryDelay": 3000,
+        "timeout": 10000
+    },
+    "devMode": false,
+    "keyProtect": {
+        "adminKeyName": "{{ .Values.config.keyProtect.adminKeyName }}",
+        "retries": 1,
+        "retryDelay": 3000,
+        "timeout": 10000
+    },
+    "blockchain": {
+        "connectionFile": "profile.json",
+        "admin": "{{ .Values.config.blockchain.admin }}",
+        "chaincodeName": "{{ .Values.config.blockchain.chaincodeName }}",
+        "channelName": "{{ .Values.config.blockchain.channelName }}",
+        "gatewayDiscovery": {
+            "enabled": true,
+            "asLocalhost": false
+        },
+        "pingTimeout": 5000
+    },
+    "rateLimit": {
+        "windowMs": "{{ .Values.config.rateLimit.windowMs }}",
+        "dbPartitionKey": "{{ .Values.config.rateLimit.dbPartitionKey }}",
+        "dbName": "{{ .Values.config.rateLimit.dbName }}",
+        "message": {
+            "message": "{{ .Values.config.rateLimit.message }}",
+            "status": "{{ .Values.config.rateLimit.statusCode }}"
+        }
+    }
+}

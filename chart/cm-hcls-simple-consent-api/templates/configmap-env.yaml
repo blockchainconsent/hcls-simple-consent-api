@@ -1,0 +1,20 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "chart.fullname" . }}-env-configmap
+data:
+  PORT: {{ required "A valid .Values.service.internalPort entry required!" .Values.service.internalPort | quote}}
+  APP_ID_URL: {{ .Values.config.appId.url | quote}}
+  DEIDENTIFIER_URL: {{ .Values.config.deIdentifier.url | quote}}
+  KEYPROTECT_URL: {{ .Values.config.keyProtect.endPoint | quote}}
+  KEYPROTECT_GUID: {{ .Values.config.keyProtect.guid | quote}}
+  PATIENT_SUPPORT_API: {{ .Values.config.fhir.patientSupportEndpoint | quote}}
+  USE_HTTPS: {{ .Values.config.enableHttps | quote}}
+  NEW_RELIC_ENABLED: {{ .Values.newRelic.enabled | quote }}
+  NEW_RELIC_APP_NAME: {{ .Values.newRelic.appName | quote }}
+  NEW_RELIC_HIGH_SECURITY: "true"
+  NEW_RELIC_NO_CONFIG_FILE: "true"
+  CLOUDANT_USERNAME: {{ .Values.config.database.username | quote}}
+  CLOUDANT_URL: {{ .Values.config.database.host | quote}}
+  CLOUDANT_TIMEOUT: {{ .Values.config.database.cloudantTimeout | quote}}
+  CLOUDANT_PROXY_URL: {{ .Values.config.database.proxyUrl | quote}}
